@@ -1,5 +1,6 @@
 # tmdb-project
-Authored    :   Achmad Abdul Aziz <br>
+Author        :   Achmad Abdul Aziz <br>
+UI Design   :   PT Artha Inovasi Gemilang <br>
 Icons          :   <br>
 https://material.io/resources/icons/?style=baseline, <br> 
 https://www.flaticon.com/search?search-type=icons&word=dan+darius <br>
