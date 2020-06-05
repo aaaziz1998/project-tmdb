@@ -1,0 +1,38 @@
+PODS:
+  - Alamofire (5.1.0)
+  - IQKeyboardManagerSwift (6.5.5)
+  - JGProgressHUD (2.1)
+  - Kingfisher (5.13.4):
+    - Kingfisher/Core (= 5.13.4)
+  - Kingfisher/Core (5.13.4)
+  - SkeletonView (1.8.7)
+  - TextFieldEffects (1.6.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - IQKeyboardManagerSwift
+  - JGProgressHUD
+  - Kingfisher
+  - SkeletonView
+  - TextFieldEffects
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - IQKeyboardManagerSwift
+    - JGProgressHUD
+    - Kingfisher
+    - SkeletonView
+    - TextFieldEffects
+
+SPEC CHECKSUMS:
+  Alamofire: 9d5c5f602928e512395b30950c5984eca840093c
+  IQKeyboardManagerSwift: 0fb93310284665245591f50f7a5e38de615960b7
+  JGProgressHUD: aa403e9a5b45cae98903c4600cccdd98c0c3ec90
+  Kingfisher: d2279a7abece3c7f25a80cd2b7f363ca5cf3f44c
+  SkeletonView: ba5370f41280b2f0a76918bb143c1294232bb4f4
+  TextFieldEffects: 529b8aff706fb40f82c41c780c0777941a893796
+
+PODFILE CHECKSUM: 3da7526eb9dbac8fd913bb44e34391392b4e50ae
+
+COCOAPODS: 1.9.1
