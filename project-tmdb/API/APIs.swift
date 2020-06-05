@@ -15,7 +15,7 @@ class APIs{
     private let mainURL = "https://api.themoviedb.org"
     private let mainHomeURL = "https://www.themoviedb.org"
     private let userDefaults = UserDefaults.standard
-    private let api_key = "e297cf2a31989c442e7ac780b2d03652"
+    private let api_key = "ea402baef04c187b22620b725ad51cae"
     private let read_access_token_v4 = ""
     
     private let endpoints = APIEndpoints()
