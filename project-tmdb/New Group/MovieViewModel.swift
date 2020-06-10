@@ -16,6 +16,7 @@ protocol ProtocolMovieViewModel {
     func getResultOn(index: Int) -> MovieModel
     func nextPage()
     func filterResult(key: String)
+    func filterByGenre(genre: GenreModel)
 }
 
 class MovieViewModel{
@@ -29,6 +30,8 @@ class MovieViewModel{
     var filter = false
     var filteredModels = [MovieModel]()
     
+    var genre: GenreModel?
+    
     var loadingPage = true
         
     init(_ viewController: ProtocolViewController){
@@ -36,10 +39,22 @@ class MovieViewModel{
         refresh()
     }
     
+    init(_ viewController: ProtocolViewController,_ genre: GenreModel) {
+        self.viewController = viewController
+        self.genre = genre
+        refresh()
+    }
+    
     func refresh() {
         page = 1
         loadingPage = true
-        AF.request(api.indexMovies(page: page))
+        var url = ""
+        if genre != nil{
+            url = api.indexMoviesByGenres(page: page, id_genre: genre?.id)
+        } else {
+            url = api.indexMovies(page: page)
+        }
+        AF.request(url)
             .responseJSON { (response) in
                 let statusCode = response.response?.statusCode ?? 500
                 switch statusCode{
@@ -74,10 +89,21 @@ class MovieViewModel{
 
 extension MovieViewModel: ProtocolMovieViewModel{
     
+    func filterByGenre(genre: GenreModel) {
+        print("Do it bitch")
+    }
+    
+    
     func nextPage() {
         if !loadingPage{
             loadingPage = true
-            AF.request(api.indexMovies(page: page))
+            var url = ""
+            if genre != nil{
+                url = api.indexMoviesByGenres(page: page, id_genre: genre?.id)
+            } else {
+                url = api.indexMovies(page: page)
+            }
+            AF.request(url)
                 .responseJSON { (response) in
                     let statusCode = response.response?.statusCode ?? 500
                     switch statusCode{

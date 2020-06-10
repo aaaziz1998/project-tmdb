@@ -45,13 +45,24 @@ class APIs{
         return "\(mainURL)/\(endpoints.version3)/\(endpoints.account)?\(parameters.api_key)=\(api_key)"
     }
     
+    func indexGenre() -> String{
+        return "\(mainURL)/\(endpoints.version3)/\(endpoints.genre)/\(endpoints.movie)/\(endpoints.list)?\(parameters.api_key)=\(api_key)"
+    }
+    
     func indexMovies(page: Int?) -> String{
         return "\(mainURL)/\(endpoints.version4)/\(endpoints.list)/\(endpoints.moviesId)?\(parameters.page)=\(page ?? 1)&\(parameters.api_key)=\(api_key)"
+    }
+    
+    func indexMoviesByGenres(page: Int?, id_genre: Int?) -> String{
+        
+        return "\(mainURL)/\(endpoints.version3)/\(endpoints.discover)/\(endpoints.movie)?\(parameters.api_key)=\(api_key)&\(parameters.with_genres)=\(id_genre ?? 28)&\(parameters.page)=\(page ?? 1)"
     }
     
     func indexFavoriteMovies(session_id: String, account_id: String) -> String{
         return "\(mainURL)/\(endpoints.version3)/\(endpoints.account)/\(account_id)/\(endpoints.favorite)/\(endpoints.movies)?\(parameters.api_key)=\(api_key)&\(parameters.session_id)=\(session_id)"
     }
+    
+//    func detailMovie(id: )
     
     func markAsFavorite(account_id: String, session_id: String) -> String{
         return "\(mainURL)/\(endpoints.version3)/\(endpoints.account)/\(account_id)/\(endpoints.favorite)?\(parameters.api_key)=\(api_key)&\(parameters.session_id)=\(session_id)"
@@ -80,10 +91,13 @@ class APIEndpoints{
     let new = "new"
     let session = "session"
     let authenticate = "authenticate"
+    let genre = "genre"
+    let discover = "discover"
 }
 
 class APIParameters{
     let api_key = "api_key"
     let page = "page"
     let session_id = "session_id"
+    let with_genres = "with_genres"
 }

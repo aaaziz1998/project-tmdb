@@ -10,6 +10,10 @@ import UIKit
 import SkeletonView
 import Kingfisher
 
+import UIKit
+import SkeletonView
+import Kingfisher
+
 class Favorites_ViewController: UIViewController {
 
     var loading = true
@@ -52,22 +56,31 @@ class Favorites_ViewController: UIViewController {
             refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
             tableView.refreshControl = refreshControl
         } else {
+            self.navigationController?.navigationBar.isHidden = true
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            guard let noDataViewController = storyboard.instantiateViewController(withIdentifier: "noData_ViewController") as? NoData_ViewController else {return}
-            self.addChild(noDataViewController)
-            self.view.addSubview(noDataViewController.view)
-            noDataViewController.view.translatesAutoresizingMaskIntoConstraints = false
-            
-            NSLayoutConstraint.activate(
-                [noDataViewController.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                 noDataViewController.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                 noDataViewController.view.topAnchor.constraint(equalTo: tableView.topAnchor),
-                noDataViewController.view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)])
-            
-            noDataViewController.initViewTitle(title: "Gagal terhubung")
-            noDataViewController.btnOnView.addTarget(self, action: #selector(refreshView), for: .touchUpInside)
-            
+            guard let login_ViewController = storyboard.instantiateViewController(withIdentifier: "login_ViewController") as? Login_ViewController else {return}
+            self.addChild(login_ViewController)
+            self.view.addSubview(login_ViewController.view)
+            login_ViewController.view.translatesAutoresizingMaskIntoConstraints = true
         }
+    }
+    
+    func installNoDataView(){
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let noDataViewController = storyboard.instantiateViewController(withIdentifier: "noData_ViewController") as? NoData_ViewController else {return}
+        self.addChild(noDataViewController)
+        self.view.addSubview(noDataViewController.view)
+        noDataViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate(
+            [noDataViewController.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+             noDataViewController.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+             noDataViewController.view.topAnchor.constraint(equalTo: tableView.topAnchor),
+            noDataViewController.view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)])
+        
+        noDataViewController.initViewTitle(title: "Gagal terhubung")
+        noDataViewController.btnOnView.addTarget(self, action: #selector(refreshView), for: .touchUpInside)
+
     }
     
     @objc func refreshView(){

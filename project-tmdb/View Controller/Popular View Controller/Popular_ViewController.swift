@@ -10,17 +10,23 @@ import UIKit
 import Kingfisher
 import SkeletonView
 
+import UIKit
+import Kingfisher
+import SkeletonView
+
 class Popular_ViewController: UIViewController {
     
     var collectionViewIdentifier = "cell"
     var searchBar = UISearchController(searchResultsController: nil)
     var refreshControl = UIRefreshControl()
     
+    var genre: GenreModel?
+    
     @IBOutlet weak var collectionView: UICollectionView!
     
     var loading = true
     var loadPage = true
-    var statusUserValid = false
+//    var statusUserValid = false
     
     var movieViewModel: ProtocolMovieViewModel?
     var favoriteViewModel: ProtocolFavoriteMovieViewModel?
@@ -31,8 +37,6 @@ class Popular_ViewController: UIViewController {
     
     var apis = APIs()
     
-    @IBOutlet weak var createSessionButton: UIBarButtonItem!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,7 +45,16 @@ class Popular_ViewController: UIViewController {
         
         setupNavigationBar()
         
-        movieViewModel = MovieViewModel(self)
+        if userDefaults.getBoolValue(identifier: .isLogin){
+            favoriteViewModel = FavoriteMoviewViewModel(self)
+        }
+        
+        if let genre = genre{
+            movieViewModel = MovieViewModel(self, genre)
+        } else {
+            movieViewModel = MovieViewModel(self)
+        }
+        
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -72,31 +85,13 @@ class Popular_ViewController: UIViewController {
         print("Add to favorites")
     }
     
-    @IBAction func createSessionAction(_ sender: Any) {
-        if let sender = sender as? UIBarButtonItem{
-            if sender.title == "Login"{
-                authorizationViewModel = AuthorizationViewModel(self)
-                createSessionButton.title = "Create Session"
-            } else {
-                authorizationViewModel?.createSession()
-            }
-        }
-        
-    }
 }
 
 extension Popular_ViewController: ProtocolViewController{
     
     func success(message: String) {
         refreshControl.endRefreshing()
-        if message.contains(self.apis.createSession()){
-            if !(userDefaults.getStringValue(identifier: .session_id)?.isEmpty ?? true){
-                statusUserValid = true
-                accountViewModel = AccountViewModel(self)
-            }
-        } else if message.contains(self.apis.detailsAccount()){
-            favoriteViewModel = FavoriteMoviewViewModel(self)
-        } else if message.contains(self.apis.indexFavoriteMovies(session_id: userDefaults.getStringValue(identifier: .session_id) ?? "", account_id: userDefaults.getStringValue(identifier: .account_id) ?? "")){
+        if message.contains("listFavorite"){
             collectionView.reloadData()
         } else if message.contains("pagination"){
             loading = false
@@ -115,10 +110,6 @@ extension Popular_ViewController: ProtocolViewController{
     
     func failed(message: String) {
         loading = false
-        
-        if message.contains("Session"){
-            createSessionButton.title = "Login"
-        }
         
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -170,7 +161,7 @@ extension Popular_ViewController: UICollectionViewDelegate, UICollectionViewData
             guard let movieModel = movieViewModel?.getResultOn(index: indexPath.row) else {return}
             cell.imgFavorite.image = UIImage.getImageToFollowTintColor(image: UIImage.favorite)
             cell.imgFavorite.tintColor = .unfavoriteColor
-            if statusUserValid{
+            if userDefaults.getBoolValue(identifier: .isLogin){
                 if favoriteViewModel?.searchFavoriteStatus(movie: movieModel) ?? false{
                     cell.imgFavorite.tintColor = .favoriteColor
                 } else {

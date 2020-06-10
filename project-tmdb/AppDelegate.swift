@@ -24,9 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.overrideUserInterfaceStyle = .light
         }
         
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let afterAppDelegate = storyboard.instantiateViewController(withIdentifier: "tabBarViewController")
-//        afterAppDelegate?.modalPresentationStyle = .fullScreen
+////        afterAppDelegate?.modalPresentationStyle = .fullScreen
         window?.makeKeyAndVisible()
         window?.rootViewController = afterAppDelegate
         
