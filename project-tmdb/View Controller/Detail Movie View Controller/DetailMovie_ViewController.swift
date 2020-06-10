@@ -13,6 +13,7 @@ class DetailMovie_ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    var apis = APIs()
     var userDefaults = UserDefaults.standard
     var detailMovieViewModel: DetailMovieViewModel?
     
@@ -30,11 +31,16 @@ class DetailMovie_ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationController?.navigationBar.isHidden = true
         detailMovieViewModel = DetailMovieViewModel(self, movie_id: id_movie)
         
         tableView.delegate = self
         tableView.dataSource = self
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func backAction(){
+        self.navigationController?.popViewController(animated: true)
     }
     
 }
@@ -77,13 +83,50 @@ extension DetailMovie_ViewController: UITableViewDelegate, UITableViewDataSource
             switch cell.reuseIdentifier {
             case listIdentifier.title.rawValue:
                 cell.titleTextView.text = movie?.title
+                cell.titleBackButton.addTarget(self, action: #selector(backAction), for: .touchUpInside)
+                cell.titleBackButton.setImage(UIImage.getImageToFollowTintColor(image: .back), for: .normal)
+                cell.titleBackButton.tintColor = .white
+                cell.titleBackButton.setTitle("Movies", for: .normal)
+                cell.titleBackButton.titleLabel?.textColor = .white
+                
+                let placeholdeImage = UIImage.milkyWay
+                
+                guard let urlBackdrop = URL(string: apis.getImage(path: movie?.backdrop_path ?? "")) else {return}
+                guard let urlMovie = URL(string: apis.getImage(path: movie?.poster_path ?? "")) else {return}
+                
+                cell.titleImageBackdrop.kf.setImage(with: urlBackdrop,
+                                          placeholder: placeholdeImage,
+                                          options: [.keepCurrentImageWhileLoading,
+                                                    .scaleFactor(UIScreen.main.scale),
+                                                    .transition(.fade(1)),
+                                                    .cacheOriginalImage]) { (kingfisher) in
+                }
+                
+                cell.titleImageMovie.kf.setImage(with: urlMovie,
+                                                 placeholder: placeholdeImage,
+                                                 options: [.keepCurrentImageWhileLoading,
+                                                           .scaleFactor(UIScreen.main.scale),
+                                                           .transition(.fade(1)),
+                                                           .cacheOriginalImage]) { (kingfisher) in
+                }
+                
             case listIdentifier.information.rawValue:
-                cell.informationLabelAuthor.text = "Release date \(movie?.release_date ?? "")"
                 cell.informationViewRating.setToRound()
                 cell.informationButtonReviews.isHidden = false
                 cell.informationButtonTrailer.isHidden = false
                 cell.informationButtonFavorite.isHidden = false
                 cell.informationViewRating.setToRound()
+                
+                let rating = movie?.vote_average ?? 0
+                
+                cell.informationLabelRating.text = "\(Int(rating * 10))"
+                
+                let layer = UIView().shapeCircularLayer(center: cell.informationViewRating.center, radius: cell.informationViewRating.frame.width/2, color: .mainColor)
+                layer.strokeEnd = CGFloat(rating/10)
+                let baseLayer = UIView().shapeCircularLayer(center: cell.informationViewRating.center, radius: cell.informationViewRating.frame.width/2, color: .lightGray)
+                
+                cell.layer.addSublayer(baseLayer)
+                cell.layer.addSublayer(layer)
                 
             case listIdentifier.description.rawValue:
                 cell.descriptionTextView.text = movie?.overview
@@ -97,12 +140,12 @@ extension DetailMovie_ViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row{
         case 0:
-            return UITableView.automaticDimension
+            return 230
         case 1:
             if loading{
                 return 0
             } else {
-                return 150
+                return 120
             }
         case 2:
             return UITableView.automaticDimension

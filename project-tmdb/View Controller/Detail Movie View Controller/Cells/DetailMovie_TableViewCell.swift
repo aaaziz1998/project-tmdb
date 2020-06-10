@@ -11,6 +11,9 @@ import UIKit
 class DetailMovie_TableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleTextView: UITextView!
+    @IBOutlet weak var titleBackButton: UIButton!
+    @IBOutlet weak var titleImageBackdrop: UIImageView!
+    @IBOutlet weak var titleImageMovie: UIImageView!
     
     @IBOutlet weak var descriptionTextView: UITextView!
     

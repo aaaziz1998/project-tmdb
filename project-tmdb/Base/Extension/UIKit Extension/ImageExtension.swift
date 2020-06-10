@@ -29,5 +29,6 @@ extension UIImage{
 
     static let favorite = UIImage(named: "favorite")!
     static let milkyWay = UIImage(named: "milky_way")!
+    static let back = UIImage(named: "back")!
     
 }
