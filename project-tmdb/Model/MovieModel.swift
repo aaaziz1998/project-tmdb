@@ -22,7 +22,7 @@ class MovieModel{
     var original_title: String?
     var genre_ids = [Int]()
     var title: String?
-    var vote_average: Float?
+    var vote_average: String?
     var overview: String?
     var release_date: String?
     
@@ -40,7 +40,7 @@ class MovieModel{
             genre_ids = dictionary_genre_id
         }
         title = response["title"] as? String
-        vote_average = response["vote_average"] as? Float
+        vote_average = response["vote_average"] as? String
         overview = response["overview"] as? String
         release_date = response["release_date"] as? String
     }

@@ -62,7 +62,9 @@ class APIs{
         return "\(mainURL)/\(endpoints.version3)/\(endpoints.account)/\(account_id)/\(endpoints.favorite)/\(endpoints.movies)?\(parameters.api_key)=\(api_key)&\(parameters.session_id)=\(session_id)"
     }
     
-//    func detailMovie(id: )
+    func detailMovie(movie_id: Int) -> String{
+        return "\(mainURL)/\(endpoints.version3)/\(endpoints.movie)/\(movie_id)?\(parameters.api_key)=\(api_key)"
+    }
     
     func markAsFavorite(account_id: String, session_id: String) -> String{
         return "\(mainURL)/\(endpoints.version3)/\(endpoints.account)/\(account_id)/\(endpoints.favorite)?\(parameters.api_key)=\(api_key)&\(parameters.session_id)=\(session_id)"

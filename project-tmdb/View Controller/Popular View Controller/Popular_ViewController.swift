@@ -85,6 +85,13 @@ class Popular_ViewController: UIViewController {
         print("Add to favorites")
     }
     
+    @objc func alertAskLogin(sender: UIButton){
+        let alert = UIAlertController(title: nil, message: "Untuk menambakan ke favorite kamu harus login terlebih dahulu", preferredStyle: .alert)
+        let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(btnOK)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 extension Popular_ViewController: ProtocolViewController{
@@ -169,6 +176,8 @@ extension Popular_ViewController: UICollectionViewDelegate, UICollectionViewData
                 }
                 cell.btnFavorite.tag = indexPath.row
                 cell.btnFavorite.addTarget(self, action: #selector(addToFavorite), for: .touchUpInside)
+            } else {
+                cell.btnFavorite.addTarget(self, action: #selector(alertAskLogin), for: .touchUpInside)
             }
             
             let placeholdeImage = UIImage.milkyWay
@@ -204,6 +213,12 @@ extension Popular_ViewController: UICollectionViewDelegate, UICollectionViewData
                     }
         }
         
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let detailView = storyboard?.instantiateViewController(withIdentifier: "detailMovie_ViewController") as? DetailMovie_ViewController else {return}
+        detailView.id_movie = movieViewModel?.getResultOn(index: indexPath.row).id ?? 0
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
     
 }

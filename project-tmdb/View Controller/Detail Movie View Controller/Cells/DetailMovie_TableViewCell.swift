@@ -14,6 +14,15 @@ class DetailMovie_TableViewCell: UITableViewCell {
     
     @IBOutlet weak var descriptionTextView: UITextView!
     
+    @IBOutlet weak var informationButtonFavorite: UIButton!
+    @IBOutlet weak var informationButtonTrailer: UIButton!
+    @IBOutlet weak var informationButtonReviews: UIButton!
+    @IBOutlet weak var informationViewRating: UIView!
+    @IBOutlet weak var informationLabelRating: UILabel!
+    @IBOutlet weak var informationLabelAuthor: UILabel!
+    
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
