@@ -37,12 +37,26 @@ class Login_ViewController: UIViewController {
 
 extension Login_ViewController: ProtocolViewController{
     
-    func success(message: String) {
-        if message.contains(self.apis.createSession()){
+    func success(message: String, response: APIResponseIndicator?) {
+        switch response {
+        case .createSession:
             if !(userDefaults.getStringValue(identifier: .session_id)?.isEmpty ?? true){
                 accountViewModel = AccountViewModel(self)
             }
-        } else if message.contains(self.apis.detailsAccount()){
+        case .detailAccount:
+            var window: UIWindow?
+                        
+                        window = UIWindow(frame: UIScreen.main.bounds)
+                        if #available(iOS 13.0, *) {
+                            window?.overrideUserInterfaceStyle = .light
+                        }
+                        
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let afterAppDelegate = storyboard.instantiateViewController(withIdentifier: "tabBarViewController")
+                        afterAppDelegate.modalPresentationStyle = .fullScreen
+                        
+                        self.present(afterAppDelegate, animated: true, completion: nil)
+        default:
             var window: UIWindow?
             
             window = UIWindow(frame: UIScreen.main.bounds)
@@ -55,14 +69,10 @@ extension Login_ViewController: ProtocolViewController{
             afterAppDelegate.modalPresentationStyle = .fullScreen
             
             self.present(afterAppDelegate, animated: true, completion: nil)
-            
-//            window?.rootViewController = afterAppDelegate
-//
-//            window?.makeKeyAndVisible()
         }
     }
     
-    func failed(message: String) {
+    func failed(message: String, response: APIResponseIndicator?) {
         self.btnLogin.setTitle("Login", for: .normal)
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)

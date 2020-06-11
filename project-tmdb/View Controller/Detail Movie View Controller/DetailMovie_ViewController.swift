@@ -16,6 +16,7 @@ class DetailMovie_ViewController: UIViewController {
     var apis = APIs()
     var userDefaults = UserDefaults.standard
     var detailMovieViewModel: DetailMovieViewModel?
+    var favoriteMovieViewModel: FavoriteMovieViewModel?
     
     var id_movie: Int!
     
@@ -34,29 +35,61 @@ class DetailMovie_ViewController: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
         detailMovieViewModel = DetailMovieViewModel(self, movie_id: id_movie)
         
+        if userDefaults.getBoolValue(identifier: .isLogin){
+            favoriteMovieViewModel = FavoriteMovieViewModel(self)
+        }
+        
         tableView.delegate = self
         tableView.dataSource = self
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     @objc func backAction(){
         self.navigationController?.popViewController(animated: true)
     }
     
+    @objc func btnAddToFavorite(){
+        if userDefaults.getBoolValue(identifier: .isLogin){
+            if let movie = detailMovieViewModel?.movie{
+                favoriteMovieViewModel?.addFavorite(movie: movie)
+            }
+        } else {
+            let alert = UIAlertController(title: nil, message: "You have to login first to use this function", preferredStyle: .alert)
+            let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(btnOK)
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
 }
 
 extension DetailMovie_ViewController: ProtocolViewController{
-    
-    func success(message: String) {
-        loading = false
-        tableView.reloadData()
+    func success(message: String, response: APIResponseIndicator?) {
+        switch response {
+        case .markAsFavorite:
+            let alert = UIAlertController(title: "Berhasil", message: message, preferredStyle: .alert)
+            let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(btnOK)
+            self.present(alert, animated: true, completion: nil)
+        default:
+            loading = false
+            tableView.reloadData()
+        }
     }
     
-    func failed(message: String) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(btnOK)
-        self.present(alert, animated: true, completion: nil)
+    func failed(message: String, response: APIResponseIndicator?) {
+        switch response {
+        default:
+            let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+            let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(btnOK)
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
 }
@@ -89,6 +122,11 @@ extension DetailMovie_ViewController: UITableViewDelegate, UITableViewDataSource
                 cell.titleBackButton.setTitle("Movies", for: .normal)
                 cell.titleBackButton.titleLabel?.textColor = .white
                 
+                if let release_date = movie?.release_date{
+                    let detailed_date = release_date.components(separatedBy: "-")
+                    cell.titleLabelReleaseData.text = "Release Date: \(detailed_date[2]) \(String().getFullnameMonth(Number: detailed_date[1])) \(detailed_date[0])"
+                }
+                
                 let placeholdeImage = UIImage.milkyWay
                 
                 guard let urlBackdrop = URL(string: apis.getImage(path: movie?.backdrop_path ?? "")) else {return}
@@ -116,6 +154,8 @@ extension DetailMovie_ViewController: UITableViewDelegate, UITableViewDataSource
                 cell.informationButtonTrailer.isHidden = false
                 cell.informationButtonFavorite.isHidden = false
                 cell.informationViewRating.setToRound()
+                
+                cell.informationButtonFavorite.addTarget(self, action: #selector(btnAddToFavorite), for: .touchUpInside)
                 
                 let rating = movie?.vote_average ?? 0
                 

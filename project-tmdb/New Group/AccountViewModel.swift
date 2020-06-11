@@ -21,7 +21,7 @@ class AccountViewModel{
     
     init(_ viewController: ProtocolViewController) {
         let session_id = userDefaults.getStringValue(identifier: .session_id)
-        print(session_id)
+        print(session_id as Any)
         AF.request(apis.detailsAccount(),
                    method: .get,
                    parameters: ["session_id": session_id],
@@ -32,17 +32,17 @@ class AccountViewModel{
                 case 200...226:
                     let message = "\(self.apis.detailsAccount()), \(String.successWithStatusCode) \(statusCode)"
                     print(message)
-                    print(response.value)
+                    print(response.value as Any)
                     if let value = response.value as? NSDictionary{
                         self.accountModel = AccountModel(response: value)
                         self.saveValue()
-                        viewController.success(message: message)
+                        viewController.success(message: message, response: .detailAccount)
                     } else {
-                        viewController.failed(message: String.failedGetResult)
+                        viewController.failed(message: String.failedGetResult, response: .detailAccount)
                     }
                 default:
                     let value = response.value as? [String: Any]
-                    viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                    viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .detailAccount)
                 }
         }
     }

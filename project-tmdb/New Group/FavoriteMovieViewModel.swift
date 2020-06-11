@@ -20,7 +20,7 @@ protocol ProtocolFavoriteMovieViewModel {
     func filter(key: String)
 }
 
-class FavoriteMoviewViewModel{
+class FavoriteMovieViewModel{
     
     private var api = APIs()
     private var movieModels = [MovieModel]()
@@ -38,7 +38,7 @@ class FavoriteMoviewViewModel{
     
 }
 
-extension FavoriteMoviewViewModel: ProtocolFavoriteMovieViewModel{
+extension FavoriteMovieViewModel: ProtocolFavoriteMovieViewModel{
     
     func filter(key: String) {
         if key.isEmpty{
@@ -77,20 +77,22 @@ extension FavoriteMoviewViewModel: ProtocolFavoriteMovieViewModel{
                 let statusCode = response.response?.statusCode ?? 500
                 switch statusCode{
                 case 200...226:
-                    let message = "\(apiURLString), \(String.successWithStatusCode) \(statusCode), addFavorite"
+                    let messageStatusCode = "\(apiURLString), \(String.successWithStatusCode) \(statusCode), addFavorite"
                     print(response.value as Any)
-                    if let _ = response.value as? NSDictionary{
+                    
+                    if let value = response.value as? NSDictionary{
+                        let message = MessageModel(response: value)
                         self.refresh()
-                        self.viewController?.success(message: message)
+                        self.viewController?.success(message: message.status_message ?? messageStatusCode, response: .markAsFavorite)
                     } else {
-                        self.viewController?.failed(message: "\(String.failedGetResult)")
+                        self.viewController?.failed(message: "\(String.failedGetResult)", response: .markAsFavorite)
                     }
                 default:
                     if let value = response.value as? NSDictionary{
                         let messageModel = MessageModel(response: value)
-                        self.viewController?.failed(message: messageModel.status_message ?? "")
+                        self.viewController?.failed(message: messageModel.status_message ?? "", response: .markAsFavorite)
                     } else {
-                        self.viewController?.failed(message: "\(String.errorStatusCode) \(statusCode)")
+                        self.viewController?.failed(message: "\(String.errorStatusCode) \(statusCode)", response: .markAsFavorite)
                     }
                 }
         }
@@ -125,14 +127,14 @@ extension FavoriteMoviewViewModel: ProtocolFavoriteMovieViewModel{
                         
                         self.page += 1
                         
-                        self.viewController.success(message: message)
+                        self.viewController.success(message: message, response: .indexFavoriteMovies)
                     } else {
-                        self.viewController.failed(message: String.failedGetResult)
+                        self.viewController.failed(message: String.failedGetResult, response: .indexFavoriteMovies)
                     }
                 
                 default:
                     let value = response.value as? [String: Any]
-                    self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                    self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .indexFavoriteMovies)
                 }
         }
     }

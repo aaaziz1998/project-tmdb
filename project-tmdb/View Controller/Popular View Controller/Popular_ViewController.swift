@@ -46,7 +46,7 @@ class Popular_ViewController: UIViewController {
         setupNavigationBar()
         
         if userDefaults.getBoolValue(identifier: .isLogin){
-            favoriteViewModel = FavoriteMoviewViewModel(self)
+            favoriteViewModel = FavoriteMovieViewModel(self)
         }
         
         if let genre = genre{
@@ -86,7 +86,7 @@ class Popular_ViewController: UIViewController {
     }
     
     @objc func alertAskLogin(sender: UIButton){
-        let alert = UIAlertController(title: nil, message: "Untuk menambakan ke favorite kamu harus login terlebih dahulu", preferredStyle: .alert)
+        let alert = UIAlertController(title: nil, message: "You have to login first to use this function", preferredStyle: .alert)
         let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(btnOK)
         self.present(alert, animated: true, completion: nil)
@@ -96,11 +96,12 @@ class Popular_ViewController: UIViewController {
 
 extension Popular_ViewController: ProtocolViewController{
     
-    func success(message: String) {
+    func success(message: String, response: APIResponseIndicator?) {
         refreshControl.endRefreshing()
-        if message.contains("listFavorite"){
+        switch response {
+        case .indexFavoriteMovies:
             collectionView.reloadData()
-        } else if message.contains("pagination"){
+        case .pagination(indicator: .indexMovieByGenre):
             loading = false
             guard let countMovieModel = movieViewModel?.countValue() else {return}
             if collectionView.numberOfItems(inSection: 0) == countMovieModel{
@@ -108,14 +109,14 @@ extension Popular_ViewController: ProtocolViewController{
             } else {
                 collectionView.reloadData()
             }
-        } else {
+        default:
             loading = false
             loadPage = false
             collectionView.reloadData()
         }
     }
     
-    func failed(message: String) {
+    func failed(message: String, response: APIResponseIndicator?) {
         loading = false
         
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)

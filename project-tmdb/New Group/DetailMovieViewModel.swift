@@ -42,20 +42,20 @@ class DetailMovieViewModel{
                 case 200...226:
                     let message = "\(self.apis.createSession()), \(String.successWithStatusCode) \(statusCode)"
                     print(message)
-                    print(response.value)
+                    print(response.value as Any)
                     if let value = response.value as? NSDictionary{
                         self.movie = MovieModel(response: value)
-                        self.viewController?.success(message: message)
+                        self.viewController?.success(message: message, response: .detailMovie)
                     } else {
                         let value = response.value as? [String: Any]
-                        self.viewController?.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                        self.viewController?.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .detailMovie)
                     }
                 default:
                     if let value = response.value as? NSDictionary{
                         let message = MessageModel(response: value)
-                        self.viewController?.failed(message: message.status_message ?? "Failed \(statusCode)")
+                        self.viewController?.failed(message: message.status_message ?? "Failed \(statusCode)", response: .detailMovie)
                     } else {
-                        self.viewController?.failed(message: "Failed \(statusCode)")
+                        self.viewController?.failed(message: "Failed \(statusCode)", response: .detailMovie)
                     }
                 }
         }

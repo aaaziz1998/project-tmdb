@@ -52,7 +52,7 @@ class MovieViewModel{
         if genre != nil{
             url = api.indexMoviesByGenres(page: page, id_genre: genre?.id)
         } else {
-            url = api.indexMovies(page: page)
+            return
         }
         AF.request(url)
             .responseJSON { (response) in
@@ -71,16 +71,16 @@ class MovieViewModel{
                         self.page += 1
                         
                         self.loadingPage = false
-                        self.viewController.success(message: String.success)
+                        self.viewController.success(message: String.success, response: .indexMovieByGenre)
                     } else {
                         self.loadingPage = false
-                        self.viewController.failed(message: String.failedGetResult)
+                        self.viewController.failed(message: String.failedGetResult, response: .indexMovieByGenre)
                     }
                 
                 default:
                     let value = response.value as? [String: Any]
                     self.loadingPage = false
-                    self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                    self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .indexMovieByGenre)
                 }
         }
     }
@@ -101,7 +101,7 @@ extension MovieViewModel: ProtocolMovieViewModel{
             if genre != nil{
                 url = api.indexMoviesByGenres(page: page, id_genre: genre?.id)
             } else {
-                url = api.indexMovies(page: page)
+                return
             }
             AF.request(url)
                 .responseJSON { (response) in
@@ -120,16 +120,16 @@ extension MovieViewModel: ProtocolMovieViewModel{
                             self.page += 1
                             
                             self.loadingPage = false
-                            self.viewController.success(message: String.success+", pagination")
+                            self.viewController.success(message: String.success+", pagination", response: .pagination(indicator: .indexMovieByGenre))
                         } else {
                             self.loadingPage = false
-                            self.viewController.failed(message: String.failedGetResult)
+                            self.viewController.failed(message: String.failedGetResult, response: .pagination(indicator: .indexMovieByGenre))
                         }
                     
                     default:
                         let value = response.value as? [String: Any]
                         self.loadingPage = false
-                        self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                        self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .pagination(indicator: .indexMovieByGenre))
                     }
             }
 

@@ -103,3 +103,24 @@ class APIParameters{
     let session_id = "session_id"
     let with_genres = "with_genres"
 }
+
+enum APIResponseIndicator {
+    case requestToken
+    case authenticateToken
+    case createSession
+    case detailAccount
+    case indexGenre
+    case indexMovie
+    case indexMovieByGenre
+    case indexFavoriteMovies
+    case detailMovie
+    case markAsFavorite
+    case getImage
+    case pagination(indicator: APIResponsePaginationIndicator)
+}
+
+enum APIResponsePaginationIndicator{
+    case indexMovie
+    case indexFavorite
+    case indexMovieByGenre
+}

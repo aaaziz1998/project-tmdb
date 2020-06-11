@@ -39,11 +39,11 @@ class AuthorizationViewModel{
                         }
                         
                     } else {
-                        self.viewController?.failed(message: String.failedGetResult)
+                        self.viewController?.failed(message: String.failedGetResult, response: .requestToken)
                     }
                 default:
                     let value = response.value as? [String: Any]
-                    self.viewController?.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                    self.viewController?.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .requestToken)
                 }
         }
     }
@@ -79,21 +79,21 @@ extension AuthorizationViewModel: ProtocolAuthorizationViewModel{
                 case 200...226:
                     let message = "\(self.apis.createSession()), \(String.successWithStatusCode) \(statusCode)"
                     print(message)
-                    print(response.value)
+                    print(response.value as Any)
                     if let value = response.value as? NSDictionary{
                         self.sessionModel = SessionModel(response: value)
                         self.saveSession()
-                        self.viewController?.success(message: message)
+                        self.viewController?.success(message: message, response: .createSession)
                     } else {
                         let value = response.value as? [String: Any]
-                        self.viewController?.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                        self.viewController?.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .createSession)
                     }
                 default:
                     if let value = response.value as? NSDictionary{
-                        var message = MessageModel(response: value)
-                        self.viewController?.failed(message: message.status_message ?? "Failed \(statusCode)")
+                        let message = MessageModel(response: value)
+                        self.viewController?.failed(message: message.status_message ?? "Failed \(statusCode)", response: .createSession)
                     } else {
-                        self.viewController?.failed(message: "Failed \(statusCode)")
+                        self.viewController?.failed(message: "Failed \(statusCode)", response: .createSession)
                     }
                     
                     

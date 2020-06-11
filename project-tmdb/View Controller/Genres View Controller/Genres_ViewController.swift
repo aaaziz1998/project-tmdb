@@ -38,19 +38,18 @@ class Genres_ViewController: UIViewController {
 
 extension Genres_ViewController: ProtocolViewController{
     
-    func success(message: String) {
+    func success(message: String, response: APIResponseIndicator?) {
         loading = false
         collectionView.reloadData()
     }
     
-    func failed(message: String) {
+    func failed(message: String, response: APIResponseIndicator?) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(btnOK)
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
+
 }
 
 extension Genres_ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{

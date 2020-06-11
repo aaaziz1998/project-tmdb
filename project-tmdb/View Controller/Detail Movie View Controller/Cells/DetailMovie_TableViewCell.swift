@@ -14,6 +14,7 @@ class DetailMovie_TableViewCell: UITableViewCell {
     @IBOutlet weak var titleBackButton: UIButton!
     @IBOutlet weak var titleImageBackdrop: UIImageView!
     @IBOutlet weak var titleImageMovie: UIImageView!
+    @IBOutlet weak var titleLabelReleaseData: UILabel!
     
     @IBOutlet weak var descriptionTextView: UITextView!
     
@@ -22,7 +23,6 @@ class DetailMovie_TableViewCell: UITableViewCell {
     @IBOutlet weak var informationButtonReviews: UIButton!
     @IBOutlet weak var informationViewRating: UIView!
     @IBOutlet weak var informationLabelRating: UILabel!
-    @IBOutlet weak var informationLabelAuthor: UILabel!
     
     
     

@@ -30,7 +30,7 @@ class Favorites_ViewController: UIViewController {
     
     var refreshControl = UIRefreshControl()
 
-    var favoriteModelView: FavoriteMoviewViewModel?
+    var favoriteModelView: FavoriteMovieViewModel?
     
     var apis = APIs()
     var userDefaults = UserDefaults.standard
@@ -42,7 +42,7 @@ class Favorites_ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        favoriteModelView = FavoriteMoviewViewModel(self)
+        favoriteModelView = FavoriteMovieViewModel(self)
         btnFilter.addTarget(self, action: #selector(filterAction), for: .touchUpInside)
         
         if userDefaults.getBoolValue(identifier: .isLogin){
@@ -167,24 +167,25 @@ class Favorites_ViewController: UIViewController {
 
 extension Favorites_ViewController: ProtocolViewController{
     
-    func success(message: String) {
-        if message.contains("addFavorite"){
+    func success(message: String, response: APIResponseIndicator?) {
+        switch response {
+        case .markAsFavorite:
             favoriteModelView?.refresh()
-        } else {
+        default:
             loading = false
             refreshControl.endRefreshing()
             tableView.reloadData()
         }
     }
     
-    func failed(message: String) {
+    func failed(message: String, response: APIResponseIndicator?) {
         loading = false
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let btnOK = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(btnOK)
         self.present(alert, animated: true, completion: nil)
     }
-    
+
 }
 
 extension Favorites_ViewController: UISearchBarDelegate{

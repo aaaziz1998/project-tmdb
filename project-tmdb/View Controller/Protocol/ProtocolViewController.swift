@@ -9,7 +9,7 @@
 import Foundation
 
 protocol ProtocolViewController {
-    func success(message: String)
-    func failed(message: String)
+    func success(message: String, response: APIResponseIndicator?)
+    func failed(message: String, response: APIResponseIndicator?)
 }
 

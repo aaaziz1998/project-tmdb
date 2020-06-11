@@ -59,14 +59,14 @@ extension GenresViewModel: ProtocolGenresViewModel{
                             self.genres.append(GenreModel(response: result))
                         }
                     
-                        self.viewController.success(message: String.success)
+                        self.viewController.success(message: String.success, response: .indexGenre)
                     } else {
-                        self.viewController.failed(message: String.failedGetResult)
+                        self.viewController.failed(message: String.failedGetResult, response: .indexGenre)
                     }
                 
                 default:
                     let value = response.value as? [String: Any]
-                    self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)")
+                    self.viewController.failed(message: value?["status_message"] as? String ?? "\(String.errorStatusCode) \(statusCode)", response: .indexGenre)
                 }
                 
         }
